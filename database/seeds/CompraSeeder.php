@@ -1,9 +1,8 @@
 <?php
 
 use Illuminate\Database\Seeder;
-use App\Comprobante;
 
-class ComprobanteSeeder extends Seeder
+class CompraSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -12,6 +11,6 @@ class ComprobanteSeeder extends Seeder
      */
     public function run()
     {
-        factory(Comprobante::class, 10)->create();
+        //
     }
 }

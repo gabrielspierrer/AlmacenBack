@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\VentaCompra;
+use App\Compra;
 use App\Comprobante;
+use App\Articulo;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
 
-class VentaCompraController extends Controller
+class CompraController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -17,8 +18,8 @@ class VentaCompraController extends Controller
      */
     public function index()
     {
-        $ventaCompra = VentaCompra::with('articulo')->get();
-        return $ventaCompra;
+        $compra = Compra::with('articulo')->get();
+        return $compra;
     }
 
     /**
@@ -40,9 +41,9 @@ class VentaCompraController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'articulo_id' => 'required',
+            'articulo_id' => 'required|exists:articulos,id',
             'cantidad' => 'required|numeric|gt:0',
-            'precio' => 'required',
+            'precio' => 'required|numeric|gt:0',
         ]);
         
         if ($validator->fails()) {
@@ -52,31 +53,31 @@ class VentaCompraController extends Controller
             return $validacion;
         }else {
             $validar = true;
-            $ventaCompra = VentaCompra::create($request->all());
-            $ventaCompra['validar'] = $validar;
-            return $ventaCompra;
+            $compra = Compra::create($request->all());
+            $compra['validar'] = $validar;
+            return $compra;
         }
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\VentaCompra  $ventaCompra
+     * @param  \App\Compra  $compra
      * @return \Illuminate\Http\Response
      */
     public function show($id)
     {
-        $ventaCompra = VentaCompra::with('articulo')->find($id);
-        return $ventaCompra;
+        $compra = Compra::with('articulo')->find($id);
+        return $compra;
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\VentaCompra  $ventaCompra
+     * @param  \App\Compra  $compra
      * @return \Illuminate\Http\Response
      */
-    public function edit(VentaCompra $ventaCompra)
+    public function edit(Compra $compra)
     {
         //
     }
@@ -85,10 +86,10 @@ class VentaCompraController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\VentaCompra  $ventaCompra
+     * @param  \App\Compra  $compra
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, VentaCompra $ventaCompra)
+    public function update(Request $request, Compra $compra)
     {
         //
     }
@@ -96,46 +97,57 @@ class VentaCompraController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\VentaCompra  $ventaCompra
+     * @param  \App\Compra  $compra
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
     {
-        $ventaCompra = VentaCompra::findOrFail($id);
-        $ventaCompra->delete();
+        $compra = Compra::findOrFail($id);
+        $compra->delete();
     }
 
-    public function ventacompra($tipo)
+    public function compra()
     {
         DB::beginTransaction();
         try {
-            $ventaCompra = VentaCompra::with('articulo')->get();
-            $numero = uniqid();
-            $total = $ventaCompra->sum('precio');
+            $compra = Compra::with('articulo')->get();
+            $tipo = 'Compra';
+            $total = $compra->sum('precio');
             $comprobante = Comprobante::create([
                 'fecha' => now(),
-                'numero' => $numero,
+                'hora' => now(),
                 'tipo' => $tipo,
                 'total' => $total,
             ]);
 
             $comprobanteDetalle = array();
-            for ($i = 0; $i < count($ventaCompra); $i++) {
+            for ($i = 0; $i < count($compra); $i++) {
                 $comprobanteDetalle[$i] = $comprobante->comprobantedetalles()->create([
                     'comprobante_id' => $comprobante->id,
-                    'articulo' =>  $ventaCompra[$i]->articulo['nombre'],
-                    'cantidad' => $ventaCompra[$i]->cantidad,
-                    'precio' => $ventaCompra[$i]->precio,
+                    'articulo_id' =>  $compra[$i]->articulo['id'],
+                    'cantidad' => $compra[$i]->cantidad,
+                    'precio' => $compra[$i]->precio,
                 ]);
-            }    
+            }
 
-            DB::table('venta_compras')->delete();
+            $articulos = Articulo::all();
+            for ($i = 0; $i < count($articulos); $i++) {
+                for ($j = 0; $j < count($comprobanteDetalle); $j++) {
+                    if ($articulos[$i]->id == $comprobanteDetalle[$j]->articulo_id) {
+                        $articulos[$i]->update([
+                            'stock' => $articulos[$i]->stock + $comprobanteDetalle[$j]->cantidad,
+                        ]);
+                    }
+                }
+            }
+
+            DB::table('compras')->delete();
 
             DB::commit();
 
             $respuesta = true;
-            $comprobante['respuesta'] = $respuesta;
-            return $comprobante;
+            $valorTotal = number_format($total, 2);
+            return array('respuesta' => $respuesta, 'total' => $valorTotal);
 
         } catch (\Exception $e) {    
             
@@ -147,8 +159,17 @@ class VentaCompraController extends Controller
         }
     }
 
-    public function borrar()
-    {
-        DB::table('venta_compras')->delete();
+    public function sumaCompra() {
+        $comprobantes = Comprobante::all();
+        $fecha = now()->toDateString('Y-m-d');
+        $sumaTotal = 0;
+
+        for ($i = 0; $i < count($comprobantes); $i++) {
+            if ($comprobantes[$i]->tipo == 'Compra' && $comprobantes[$i]->fecha == $fecha) {
+                $sumaTotal += $comprobantes[$i]->total;
+            }
+        }
+
+        return $sumaTotal;
     }
 }

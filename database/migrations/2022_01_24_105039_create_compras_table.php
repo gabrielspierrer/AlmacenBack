@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateComprobanteDetallesTable extends Migration
+class CreateComprasTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,8 @@ class CreateComprobanteDetallesTable extends Migration
      */
     public function up()
     {
-        Schema::create('comprobante_detalles', function (Blueprint $table) {
+        Schema::create('compras', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('comprobante_id');
-            $table->foreign('comprobante_id')->references('id')->on('comprobantes')->onDelete('cascade');
             $table->unsignedBigInteger('articulo_id');
             $table->foreign('articulo_id')->references('id')->on('articulos')->onDelete('cascade');
             $table->integer('cantidad');
@@ -32,6 +30,6 @@ class CreateComprobanteDetallesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('comprobante_detalles');
+        Schema::dropIfExists('compras');
     }
 }

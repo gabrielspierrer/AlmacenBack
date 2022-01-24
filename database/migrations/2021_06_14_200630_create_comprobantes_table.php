@@ -16,9 +16,9 @@ class CreateComprobantesTable extends Migration
         Schema::create('comprobantes', function (Blueprint $table) {
             $table->id();
             $table->date('fecha');
-            $table->string('numero');
+            $table->time('hora');
             $table->string('tipo');
-            $table->integer('total');
+            $table->decimal('total',10,2);
             $table->timestamps();
         });
     }

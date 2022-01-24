@@ -20,9 +20,11 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 Route::resource('rubros','RubroController');
 Route::resource('articulos','ArticuloController');
-Route::resource('venta_compras','VentaCompraController');
+Route::resource('ventas','VentaController');
+Route::resource('compras','CompraController');
 Route::resource('comprobantes','ComprobanteController');
 Route::resource('comprobante_detalles','ComprobanteDetalleController');
-Route::get('ventacompra/{tipo}', 'VentaCompraController@ventacompra');
-Route::get('borrar', 'VentaCompraController@borrar');
-Route::get('inventario', 'ArticuloController@inventario');
+Route::get('venta', 'VentaController@venta');
+Route::get('compra', 'CompraController@compra');
+Route::get('sumaVenta', 'VentaController@sumaVenta');
+Route::get('sumaCompra', 'CompraController@sumaCompra');

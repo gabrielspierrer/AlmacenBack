@@ -15,7 +15,7 @@ class ComprobanteController extends Controller
      */
     public function index()
     {
-        $comprobante = Comprobante::with('comprobantedetalles')->get();
+        $comprobante = Comprobante::with('comprobantedetalles.articulo')->orderBy('id', 'desc')->get();
         return $comprobante;
     }
 
@@ -48,7 +48,7 @@ class ComprobanteController extends Controller
      */
     public function show($id)
     {
-        $comprobante = Comprobante::with('comprobantedetalles')->find($id);
+        $comprobante = Comprobante::with('comprobantedetalles.articulo')->find($id);
         return $comprobante;
     }
 

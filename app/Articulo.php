@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Articulo extends Model
 {
     protected $fillable = [
-        'nombre', 'rubro_id', 'stock_min', 'stock_max', 'precio', 'fecha_venc',
+        'nombre', 'rubro_id', 'stock', 'precio',
     ];
 
     public function rubro()
@@ -15,8 +15,18 @@ class Articulo extends Model
         return $this->belongsTo(Rubro::class);
     }
 
-    public function ventacompras()
+    public function comprobantedetalles()
     {
-        return $this->hasMany(VentaCompra::class);
+        return $this->hasMany(ComprobanteDetalle::class);
+    }
+
+    public function ventas()
+    {
+        return $this->hasMany(Venta::class);
+    }
+
+    public function compras()
+    {
+        return $this->hasMany(Compra::class);
     }
 }

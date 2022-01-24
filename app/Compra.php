@@ -4,7 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class VentaCompra extends Model
+class Compra extends Model
 {
     protected $fillable = [
         'articulo_id', 'cantidad', 'precio',

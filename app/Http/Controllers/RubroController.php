@@ -15,7 +15,8 @@ class RubroController extends Controller
      */
     public function index()
     {
-        return Rubro::all();
+        $rubro = Rubro::orderBy('id', 'desc')->get();
+        return $rubro;
     }
 
     /**
@@ -37,7 +38,7 @@ class RubroController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'nombre' => 'required|regex:/^[a-zA-Z]+$/u',
+            'nombre' => 'required',
         ]);
         
         if ($validator->fails()) {
@@ -85,7 +86,7 @@ class RubroController extends Controller
     public function update(Request $request, $id)
     {
         $validator = Validator::make($request->all(), [
-            'nombre' => 'required|regex:/^[a-zA-Z]+$/u',
+            'nombre' => 'required',
         ]);
         
         if ($validator->fails()) {

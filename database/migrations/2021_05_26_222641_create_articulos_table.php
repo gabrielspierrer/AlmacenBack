@@ -18,10 +18,8 @@ class CreateArticulosTable extends Migration
             $table->string('nombre');
             $table->unsignedBigInteger('rubro_id');
             $table->foreign('rubro_id')->references('id')->on('rubros')->onDelete('cascade');
-            $table->integer('stock_min');
-            $table->integer('stock_max');
-            $table->integer('precio');
-            $table->date('fecha_venc');
+            $table->integer('stock');
+            $table->decimal('precio',10,2);
             $table->timestamps();
         });
     }

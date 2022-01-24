@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Comprobante extends Model
 {
     protected $fillable = [
-        'fecha', 'numero', 'tipo', 'total',
+        'fecha', 'hora', 'tipo', 'total',
     ];
 
     public function comprobantedetalles()

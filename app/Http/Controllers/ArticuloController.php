@@ -17,7 +17,7 @@ class ArticuloController extends Controller
      */
     public function index()
     {
-        $articulo = Articulo::with('rubro')->get();
+        $articulo = Articulo::with('rubro')->orderBy('id', 'desc')->get();
         return $articulo;
     }
 
@@ -41,11 +41,9 @@ class ArticuloController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'nombre' => 'required',
-            'rubro_id' => 'required',
-            'stock_min' => 'required',
-            'stock_max' => 'required|gt:stock_min',
+            'rubro_id' => 'required|exists:rubros,id',
+            'stock' => 'required|numeric|gte:0',
             'precio' => 'required|numeric|gt:0',
-            'fecha_venc' => 'required',
         ]);
         
         if ($validator->fails()) {
@@ -95,11 +93,9 @@ class ArticuloController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'nombre' => 'required',
-            'rubro_id' => 'required',
-            'stock_min' => 'required',
-            'stock_max' => 'required|gt:stock_min',
+            'rubro_id' => 'required|exists:rubros,id',
+            'stock' => 'required|numeric|gte:0',
             'precio' => 'required|numeric|gt:0',
-            'fecha_venc' => 'required',
         ]);
         
         if ($validator->fails()) {
@@ -126,27 +122,5 @@ class ArticuloController extends Controller
     {
         $articulo = Articulo::findOrFail($id);
         $articulo->delete();
-    }
-
-    public function inventario()
-    {
-        DB::beginTransaction();
-        try {
-            $detalles = ComprobanteDetalle::with('comprobante')->get();
-            $ventaCompra = array();
-            $ventaCompra = $detalles->groupBy('comprobante.tipo');
-
-            DB::commit();
-
-            return $ventaCompra;
-
-        } catch (\Exception $e) {    
-            
-            DB::rollback();
-
-            $respuesta = false;
-            return $respuesta;
-            throw $e;
-        }
     }
 }
