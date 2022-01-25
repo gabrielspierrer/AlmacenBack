@@ -41,6 +41,9 @@ class VentaController extends Controller
      */
     public function store(Request $request)
     {
+        // Traer articulo especifico
+        $art = Articulo::find($request->articulo_id);
+
         // Verificar los campos antes de hacer el post
         $id = $request->articulo_id;
         $art = Articulo::find($id);
@@ -48,7 +51,6 @@ class VentaController extends Controller
         $validator = Validator::make($request->all(), [
             'articulo_id' => 'required|exists:articulos,id',
             'cantidad' => 'required|numeric|gt:0|lte:'.$art->stock,
-            'precio' => 'required|numeric|gt:0',
         ]);
         
         if ($validator->fails()) {
@@ -58,7 +60,12 @@ class VentaController extends Controller
             return $validacion;
         }else {
             $validar = true;
-            $venta = Venta::create($request->all());
+            // Crear venta con el precio de venta
+            $venta = Venta::create([
+                'articulo_id' => $request->articulo_id,
+                'cantidad' => $request->cantidad,
+                'precio' => $art->precio_venta * $request->cantidad,
+            ]);
             $venta['validar'] = $validar;
             return $venta;
         }

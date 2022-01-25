@@ -41,11 +41,13 @@ class CompraController extends Controller
      */
     public function store(Request $request)
     {
+        // Traer articulo especifico
+        $art = Articulo::find($request->articulo_id);
+
         // Verificar los campos antes de hacer el post
         $validator = Validator::make($request->all(), [
             'articulo_id' => 'required|exists:articulos,id',
             'cantidad' => 'required|numeric|gt:0',
-            'precio' => 'required|numeric|gt:0',
         ]);
         
         if ($validator->fails()) {
@@ -55,7 +57,12 @@ class CompraController extends Controller
             return $validacion;
         }else {
             $validar = true;
-            $compra = Compra::create($request->all());
+            // Crear compra con el precio de costo
+            $compra = Compra::create([
+                'articulo_id' => $request->articulo_id,
+                'cantidad' => $request->cantidad,
+                'precio' => $art->precio_costo * $request->cantidad,
+            ]);
             $compra['validar'] = $validar;
             return $compra;
         }

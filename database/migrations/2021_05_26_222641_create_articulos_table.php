@@ -19,7 +19,8 @@ class CreateArticulosTable extends Migration
             $table->unsignedBigInteger('rubro_id');
             $table->foreign('rubro_id')->references('id')->on('rubros')->onDelete('cascade');
             $table->integer('stock');
-            $table->decimal('precio',10,2);
+            $table->decimal('precio_costo',10,2);
+            $table->decimal('precio_venta',10,2);
             $table->timestamps();
         });
     }

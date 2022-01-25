@@ -45,7 +45,8 @@ class ArticuloController extends Controller
             'nombre' => 'required',
             'rubro_id' => 'required|exists:rubros,id',
             'stock' => 'required|numeric|gte:0',
-            'precio' => 'required|numeric|gt:0',
+            'precio_costo' => 'required|numeric|gt:0',
+            'precio_venta' => 'required|numeric|gt:0',
         ]);
         
         if ($validator->fails()) {
@@ -99,7 +100,8 @@ class ArticuloController extends Controller
             'nombre' => 'required',
             'rubro_id' => 'required|exists:rubros,id',
             'stock' => 'required|numeric|gte:0',
-            'precio' => 'required|numeric|gt:0',
+            'precio_costo' => 'required|numeric|gt:0',
+            'precio_venta' => 'required|numeric|gt:0',
         ]);
         
         if ($validator->fails()) {

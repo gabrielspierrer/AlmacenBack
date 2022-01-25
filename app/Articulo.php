@@ -8,7 +8,7 @@ class Articulo extends Model
 {
     // Campos de asignacion masiva
     protected $fillable = [
-        'nombre', 'rubro_id', 'stock', 'precio',
+        'nombre', 'rubro_id', 'stock', 'precio_costo', 'precio_venta',
     ];
 
     // Relaciones de la tabla
