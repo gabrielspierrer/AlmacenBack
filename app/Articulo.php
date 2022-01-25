@@ -6,10 +6,12 @@ use Illuminate\Database\Eloquent\Model;
 
 class Articulo extends Model
 {
+    // Campos de asignacion masiva
     protected $fillable = [
         'nombre', 'rubro_id', 'stock', 'precio',
     ];
 
+    // Relaciones de la tabla
     public function rubro()
     {
         return $this->belongsTo(Rubro::class);

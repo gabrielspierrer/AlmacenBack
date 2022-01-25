@@ -18,6 +18,7 @@ class CompraController extends Controller
      */
     public function index()
     {
+        // Get de compras con relacion articulo
         $compra = Compra::with('articulo')->get();
         return $compra;
     }
@@ -40,6 +41,7 @@ class CompraController extends Controller
      */
     public function store(Request $request)
     {
+        // Verificar los campos antes de hacer el post
         $validator = Validator::make($request->all(), [
             'articulo_id' => 'required|exists:articulos,id',
             'cantidad' => 'required|numeric|gt:0',
@@ -67,6 +69,7 @@ class CompraController extends Controller
      */
     public function show($id)
     {
+        // Get por id de la compra
         $compra = Compra::with('articulo')->find($id);
         return $compra;
     }
@@ -102,6 +105,7 @@ class CompraController extends Controller
      */
     public function destroy($id)
     {
+        // Delete de compras
         $compra = Compra::findOrFail($id);
         $compra->delete();
     }
@@ -110,6 +114,7 @@ class CompraController extends Controller
     {
         DB::beginTransaction();
         try {
+            // Crear el comprobante de la compra
             $compra = Compra::with('articulo')->get();
             $tipo = 'Compra';
             $total = $compra->sum('precio');
@@ -119,7 +124,8 @@ class CompraController extends Controller
                 'tipo' => $tipo,
                 'total' => $total,
             ]);
-
+            
+            // Creando los detalles del comprobante
             $comprobanteDetalle = array();
             for ($i = 0; $i < count($compra); $i++) {
                 $comprobanteDetalle[$i] = $comprobante->comprobantedetalles()->create([
@@ -129,7 +135,8 @@ class CompraController extends Controller
                     'precio' => $compra[$i]->precio,
                 ]);
             }
-
+            
+            // Sumando la cantidad al stock de articulos
             $articulos = Articulo::all();
             for ($i = 0; $i < count($articulos); $i++) {
                 for ($j = 0; $j < count($comprobanteDetalle); $j++) {
@@ -140,11 +147,13 @@ class CompraController extends Controller
                     }
                 }
             }
-
+            
+            // Borrando los datos de la tabla
             DB::table('compras')->delete();
 
             DB::commit();
-
+            
+            // Respuesta con el total de la compra
             $respuesta = true;
             $valorTotal = number_format($total, 2);
             return array('respuesta' => $respuesta, 'total' => $valorTotal);
@@ -152,7 +161,7 @@ class CompraController extends Controller
         } catch (\Exception $e) {    
             
             DB::rollback();
-
+            
             $respuesta = false;
             return $respuesta;
             throw $e;
@@ -160,6 +169,7 @@ class CompraController extends Controller
     }
 
     public function sumaCompra() {
+        // Calcular el total de todas las compras del dia
         $comprobantes = Comprobante::all();
         $fecha = now()->toDateString('Y-m-d');
         $sumaTotal = 0;

@@ -6,10 +6,12 @@ use Illuminate\Database\Eloquent\Model;
 
 class ComprobanteDetalle extends Model
 {
+    // Campos de asignacion masiva
     protected $fillable = [
         'comprobante_id', 'articulo_id', 'cantidad', 'precio',
     ];
 
+    // Relaciones de la tabla
     public function comprobante()
     {
         return $this->belongsTo(Comprobante::class);

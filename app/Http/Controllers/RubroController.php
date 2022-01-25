@@ -15,6 +15,7 @@ class RubroController extends Controller
      */
     public function index()
     {
+        // Get de rubros ordenados por id descendente
         $rubro = Rubro::orderBy('id', 'desc')->get();
         return $rubro;
     }
@@ -37,6 +38,7 @@ class RubroController extends Controller
      */
     public function store(Request $request)
     {
+        // Verificar campos de rubros antes de hacer el post
         $validator = Validator::make($request->all(), [
             'nombre' => 'required',
         ]);
@@ -62,6 +64,7 @@ class RubroController extends Controller
      */
     public function show($id)
     {
+        // Get por id de rubros
         return Rubro::find($id);
     }
 
@@ -85,6 +88,7 @@ class RubroController extends Controller
      */
     public function update(Request $request, $id)
     {
+        // Verificar campos antes de hacer el put
         $validator = Validator::make($request->all(), [
             'nombre' => 'required',
         ]);
@@ -111,6 +115,7 @@ class RubroController extends Controller
      */
     public function destroy($id)
     {
+        // Delete de rubros
         $rubro = Rubro::findOrFail($id);
         $rubro->delete();
     }

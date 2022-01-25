@@ -18,6 +18,7 @@ class VentaController extends Controller
      */
     public function index()
     {
+        // Get de ventas con su relacion articulo
         $venta = Venta::with('articulo')->get();
         return $venta;
     }
@@ -40,6 +41,7 @@ class VentaController extends Controller
      */
     public function store(Request $request)
     {
+        // Verificar los campos antes de hacer el post
         $id = $request->articulo_id;
         $art = Articulo::find($id);
 
@@ -70,6 +72,7 @@ class VentaController extends Controller
      */
     public function show($id)
     {
+        // Get por id de ventas con relacion articulo
         $venta = Venta::with('articulo')->find($id);
         return $venta;
     }
@@ -105,6 +108,7 @@ class VentaController extends Controller
      */
     public function destroy($id)
     {
+        // Delete de ventas
         $venta = Venta::findOrFail($id);
         $venta->delete();
     }
@@ -113,6 +117,7 @@ class VentaController extends Controller
     {
         DB::beginTransaction();
         try {
+            // Crear comprobante de la venta
             $venta = Venta::with('articulo')->get();
             $tipo = 'Venta';
             $total = $venta->sum('precio');
@@ -123,6 +128,7 @@ class VentaController extends Controller
                 'total' => $total,
             ]);
 
+            // Crear los detalles del comprobante
             $comprobanteDetalle = array();
             for ($i = 0; $i < count($venta); $i++) {
                 $comprobanteDetalle[$i] = $comprobante->comprobantedetalles()->create([
@@ -133,6 +139,7 @@ class VentaController extends Controller
                 ]);
             }
 
+            // Restar la cantidad del stock en los articulos
             $articulos = Articulo::all();
             for ($i = 0; $i < count($articulos); $i++) {
                 for ($j = 0; $j < count($comprobanteDetalle); $j++) {
@@ -144,10 +151,12 @@ class VentaController extends Controller
                 }
             }
 
+            // Eliminar de la tabla de ventas
             DB::table('ventas')->delete();
 
             DB::commit();
 
+            // Respuesta con el total de la venta
             $respuesta = true;
             $valorTotal = number_format($total, 2);
             return array('respuesta' => $respuesta, 'total' => $valorTotal);
@@ -163,6 +172,7 @@ class VentaController extends Controller
     }
 
     public function sumaVenta() {
+        // Calcular el total de todas las ventas del dia
         $comprobantes = Comprobante::all();
         $fecha = now()->toDateString('Y-m-d');
         $sumaTotal = 0;

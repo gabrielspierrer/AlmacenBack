@@ -18,12 +18,17 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+// Rutas de la api
+
+// Rutas de los controladores con sus respectivos requests de tipo GET/POST/PUT/DELETE
 Route::resource('rubros','RubroController');
 Route::resource('articulos','ArticuloController');
 Route::resource('ventas','VentaController');
 Route::resource('compras','CompraController');
 Route::resource('comprobantes','ComprobanteController');
 Route::resource('comprobante_detalles','ComprobanteDetalleController');
+
+// Rutas de las funciones ubicadas en su respectivo controlador con su especifico tipo de request
 Route::get('venta', 'VentaController@venta');
 Route::get('compra', 'CompraController@compra');
 Route::get('sumaVenta', 'VentaController@sumaVenta');

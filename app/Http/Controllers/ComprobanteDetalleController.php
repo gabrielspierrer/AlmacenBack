@@ -14,6 +14,7 @@ class ComprobanteDetalleController extends Controller
      */
     public function index()
     {
+        // Get de comprobante detalle
         return ComprobanteDetalle::all();
     }
 
@@ -35,6 +36,7 @@ class ComprobanteDetalleController extends Controller
      */
     public function store(Request $request)
     {
+        // Post de comprobante detalle
         return ComprobanteDetalle::create($request->all());
     }
 
@@ -46,6 +48,7 @@ class ComprobanteDetalleController extends Controller
      */
     public function show($id)
     {
+        // Get por id de comprobante detalle
         return ComprobanteDetalle::find($id);
     }
 
@@ -80,6 +83,7 @@ class ComprobanteDetalleController extends Controller
      */
     public function destroy($id)
     {
+        // Delete de comprobante detalles
         $comprobanteDetalle = ComprobanteDetalle::findOrFail($id);
         $comprobanteDetalle->delete();
     }

@@ -17,6 +17,7 @@ class ArticuloController extends Controller
      */
     public function index()
     {
+        // Get de articulos con la relacion rubro y ordenados por id descendente
         $articulo = Articulo::with('rubro')->orderBy('id', 'desc')->get();
         return $articulo;
     }
@@ -39,6 +40,7 @@ class ArticuloController extends Controller
      */
     public function store(Request $request)
     {
+        // Verificar todos los campos antes de hacer el post
         $validator = Validator::make($request->all(), [
             'nombre' => 'required',
             'rubro_id' => 'required|exists:rubros,id',
@@ -67,6 +69,7 @@ class ArticuloController extends Controller
      */
     public function show($id)
     {
+        // Get de articulo por id con la relacion rubro
         $articulo = Articulo::with('rubro')->find($id);
         return $articulo;
     }
@@ -91,6 +94,7 @@ class ArticuloController extends Controller
      */
     public function update(Request $request, $id)
     {
+        // Verificar todos los campos antes de hacer el put
         $validator = Validator::make($request->all(), [
             'nombre' => 'required',
             'rubro_id' => 'required|exists:rubros,id',
@@ -120,6 +124,7 @@ class ArticuloController extends Controller
      */
     public function destroy($id)
     {
+        // Delete de articulos
         $articulo = Articulo::findOrFail($id);
         $articulo->delete();
     }

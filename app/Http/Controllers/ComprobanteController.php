@@ -15,6 +15,8 @@ class ComprobanteController extends Controller
      */
     public function index()
     {
+        // Get de comprobantes con la relacion comprobantedetalles y su relacion con articulo
+        // Ordenados por id descendente
         $comprobante = Comprobante::with('comprobantedetalles.articulo')->orderBy('id', 'desc')->get();
         return $comprobante;
     }
@@ -37,6 +39,7 @@ class ComprobanteController extends Controller
      */
     public function store(Request $request)
     {
+        // Post del comprobante
         return Comprobante::create($request->all());
     }
 
@@ -48,6 +51,7 @@ class ComprobanteController extends Controller
      */
     public function show($id)
     {
+        // Get por id de comprobante y su relacion con comprobantedetalles y articulo
         $comprobante = Comprobante::with('comprobantedetalles.articulo')->find($id);
         return $comprobante;
     }
@@ -83,6 +87,7 @@ class ComprobanteController extends Controller
      */
     public function destroy($id)
     {
+        // Delete de comprobantes
         $comprobante = Comprobante::findOrFail($id);
         $comprobante->delete();
     }
