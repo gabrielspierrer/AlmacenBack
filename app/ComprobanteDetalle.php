@@ -8,7 +8,7 @@ class ComprobanteDetalle extends Model
 {
     // Campos de asignacion masiva
     protected $fillable = [
-        'comprobante_id', 'articulo_id', 'cantidad', 'precio',
+        'comprobante_id', 'articulo_id', 'cantidad', 'precio_unitario', 'importe',
     ];
 
     // Relaciones de la tabla

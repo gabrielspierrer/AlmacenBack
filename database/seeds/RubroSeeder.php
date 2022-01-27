@@ -12,6 +12,6 @@ class RubroSeeder extends Seeder
      */
     public function run()
     {
-        factory(Rubro::class, 10)->create();
+        factory(Rubro::class, 30)->create();
     }
 }

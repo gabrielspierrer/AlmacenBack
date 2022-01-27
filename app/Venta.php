@@ -8,7 +8,7 @@ class Venta extends Model
 {
     // Campos de asignacion masiva
     protected $fillable = [
-        'articulo_id', 'cantidad', 'precio',
+        'articulo_id', 'cantidad', 'precio_unitario', 'importe',
     ];
 
     // Relaciones de la tabla

@@ -12,6 +12,6 @@ class ComprobanteSeeder extends Seeder
      */
     public function run()
     {
-        factory(Comprobante::class, 10)->create();
+        factory(Comprobante::class, 30)->create();
     }
 }

@@ -45,12 +45,9 @@ class VentaController extends Controller
         $art = Articulo::find($request->articulo_id);
 
         // Verificar los campos antes de hacer el post
-        $id = $request->articulo_id;
-        $art = Articulo::find($id);
-
         $validator = Validator::make($request->all(), [
             'articulo_id' => 'required|exists:articulos,id',
-            'cantidad' => 'required|numeric|gt:0|lte:'.$art->stock,
+            'cantidad' => 'required|numeric|gt:0|lte:'.$art['stock'],
         ]);
         
         if ($validator->fails()) {
@@ -64,7 +61,8 @@ class VentaController extends Controller
             $venta = Venta::create([
                 'articulo_id' => $request->articulo_id,
                 'cantidad' => $request->cantidad,
-                'precio' => $art->precio_venta * $request->cantidad,
+                'precio_unitario' => $art['precio_venta'],
+                'importe' => $art['precio_venta'] * $request->cantidad,
             ]);
             $venta['validar'] = $validar;
             return $venta;
@@ -127,7 +125,7 @@ class VentaController extends Controller
             // Crear comprobante de la venta
             $venta = Venta::with('articulo')->get();
             $tipo = 'Venta';
-            $total = $venta->sum('precio');
+            $total = $venta->sum('importe');
             $comprobante = Comprobante::create([
                 'fecha' => now(),
                 'hora' => now(),
@@ -142,7 +140,8 @@ class VentaController extends Controller
                     'comprobante_id' => $comprobante->id,
                     'articulo_id' =>  $venta[$i]->articulo['id'],
                     'cantidad' => $venta[$i]->cantidad,
-                    'precio' => $venta[$i]->precio,
+                    'precio_unitario' => $venta[$i]->precio_unitario,
+                    'importe' => $venta[$i]->importe,
                 ]);
             }
 
@@ -163,10 +162,8 @@ class VentaController extends Controller
 
             DB::commit();
 
-            // Respuesta con el total de la venta
             $respuesta = true;
-            $valorTotal = number_format($total, 2);
-            return array('respuesta' => $respuesta, 'total' => $valorTotal);
+            return $respuesta;
 
         } catch (\Exception $e) {    
             

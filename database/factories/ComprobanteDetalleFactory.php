@@ -12,6 +12,7 @@ $factory->define(ComprobanteDetalle::class, function (Faker $faker) {
         'comprobante_id' => Comprobante::all()->random()->id,
         'articulo_id' => Articulo::all()->random()->id,
         'cantidad' => $faker->numberBetween($min = 1, $max = 10),
-        'precio' => $faker->randomFloat($nbMaxDecimals = 2, $min = 1, $max = 10),
+        'precio_unitario' => $faker->randomFloat($nbMaxDecimals = 2, $min = 1, $max = 10),
+        'importe' => $faker->randomFloat($nbMaxDecimals = 2, $min = 1, $max = 10),
     ];
 });

@@ -18,7 +18,8 @@ class CreateVentasTable extends Migration
             $table->unsignedBigInteger('articulo_id');
             $table->foreign('articulo_id')->references('id')->on('articulos')->onDelete('cascade');
             $table->integer('cantidad');
-            $table->decimal('precio',10,2);
+            $table->decimal('precio_unitario',10,2);
+            $table->decimal('importe',10,2);
             $table->timestamps();
         });
     }

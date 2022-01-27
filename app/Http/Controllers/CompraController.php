@@ -61,7 +61,8 @@ class CompraController extends Controller
             $compra = Compra::create([
                 'articulo_id' => $request->articulo_id,
                 'cantidad' => $request->cantidad,
-                'precio' => $art->precio_costo * $request->cantidad,
+                'precio_unitario' => $art['precio_costo'],
+                'importe' => $art['precio_costo'] * $request->cantidad,
             ]);
             $compra['validar'] = $validar;
             return $compra;
@@ -124,7 +125,7 @@ class CompraController extends Controller
             // Crear el comprobante de la compra
             $compra = Compra::with('articulo')->get();
             $tipo = 'Compra';
-            $total = $compra->sum('precio');
+            $total = $compra->sum('importe');
             $comprobante = Comprobante::create([
                 'fecha' => now(),
                 'hora' => now(),
@@ -139,7 +140,8 @@ class CompraController extends Controller
                     'comprobante_id' => $comprobante->id,
                     'articulo_id' =>  $compra[$i]->articulo['id'],
                     'cantidad' => $compra[$i]->cantidad,
-                    'precio' => $compra[$i]->precio,
+                    'precio_unitario' => $compra[$i]->precio_unitario,
+                    'importe' => $compra[$i]->importe,
                 ]);
             }
             
@@ -160,10 +162,8 @@ class CompraController extends Controller
 
             DB::commit();
             
-            // Respuesta con el total de la compra
             $respuesta = true;
-            $valorTotal = number_format($total, 2);
-            return array('respuesta' => $respuesta, 'total' => $valorTotal);
+            return $respuesta;
 
         } catch (\Exception $e) {    
             
